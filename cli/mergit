@@ -1,0 +1,35 @@
+#!/bin/bash
+# Mergit by SIGUI Kessé Emmanuel (https://sikessem.com/) <contact@sikessem.com>
+
+if [[ -z $1 ]]; then
+  merge_dir=$(pwd)
+else
+  merge_dir=$(realpath -m $1)
+fi
+
+if [[ ! -d $merge_dir  ]]; then
+  mkdir -p $merge_dir
+fi
+
+if [[ -d "${merge_dir}/.git"  ]]; then
+  rm -rf "${merge_dir}/.git"
+fi
+
+cd $merge_dir
+
+read -p "Merge source : " merge_source
+read -p "Merge target : " merge_target
+read -p "Merge branch : " merge_branch
+read -p "Merge commit : " merge_commit
+
+git init
+git remote add "$merge_target" "$merge_source"
+git pull "$merge_target" "$merge_branch"
+git checkout "$merge_branch"
+
+mkdir -p "$merge_target"
+mv `ls -1a | grep -v "$merge_target" | grep -v ".git"` "$merge_target"
+
+git add .
+git commit -m "$merge_commit"
+git remote remove "$merge_target"
