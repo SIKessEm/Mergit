@@ -1,0 +1,2 @@
+# Mergit
+Git repository merger
